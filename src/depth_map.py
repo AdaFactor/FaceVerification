@@ -8,12 +8,14 @@ DATA_DIR = Path(Path(__file__).resolve()).parents[1]/'data'
 DATA_DIR = str(DATA_DIR)
 
 
-def add_z_axis(img, disparity):
+def add_z_axis(img, depth):
     cols, rows = img.shape
+    data = []
     for col in np.arange(0, cols):
         for row in np.arange(0, rows):
-            z = disparity[col, row]
-            print(col, row, z)
+            z = depth[col, row]
+            data.append([col, row, z])
+    return np.array(data, np.int32)
 
 
 def show_disperities(image_no, numDisparities=16, blockSize=15):
@@ -23,7 +25,7 @@ def show_disperities(image_no, numDisparities=16, blockSize=15):
     img_left = cv2.imread(path_left, 0)
     img_right = cv2.imread(path_right, 0)
 
-    # Pre-Processing
+    # Pre-Pro cessing
     dwn_left = cv2.pyrDown(img_left)
     dwn_right = cv2.pyrDown(img_right)
 
@@ -34,7 +36,11 @@ def show_disperities(image_no, numDisparities=16, blockSize=15):
     disparity = stereo.compute(dwn_left, dwn_right).astype(np.uint8)
     disparity = cv2.pyrUp(disparity)
     # print(disparity)
-    add_z_axis(img_left, disparity)
+    coor = add_z_axis(img_left, disparity)
+    x = coor[:, 0]
+    y = coor[:, 1]
+    z = coor[:, 2]
+    print(x*y*z)
 
     plt.figure(1, figsize=(50, 50))
 
