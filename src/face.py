@@ -31,7 +31,7 @@ def shape_point(img, detector):
     return coordinate
 
 
-def detection(image):
+def detection(image, draw=False):
     # Setting up Detector and Predictor
     detector = dlib.get_frontal_face_detector()
     green_color = (0, 255, 0)
@@ -56,55 +56,46 @@ def detection(image):
         right_bottom = (det.right(), det.bottom())
 
         # Draw a box
-        cv2.rectangle(image, left_top, right_bottom, green_color, 3)
+        if draw:
+            cv2.rectangle(image, left_top, right_bottom, green_color, 3)
 
         # Shapes
         coordinate = shape_point(gray_img, det)
 
     # Draw landmarks
-    for center in coordinate:
-        cv2.circle(image, center, 2, green_color, -1)
+    if draw:
+        for center in coordinate:
+            cv2.circle(image, center, 2, green_color, -1)
 
-    return image
+    return image, coordinate
 
 
-def main():
-    # filename = '139L.jpg'
-    # filepath = str(DATA_DIR/filename)
-    # image = cv2.imread(filepath)
-    # post_image = detection(image)
-    # cv2.imshow('Face detection', post_image)
-    # cv2.waitKey(0)
-
+# def main():
     # Video processing
-    cap = cv2.VideoCapture(0)
-    cap.set(3, 600)
-    cap.set(4, 400)
-    cap.set(cv2.CAP_PROP_FPS, 60)
-    # cap.set(cv2.CAP_PROP_BRIGHTNESS, 1)
+    # cap = cv2.VideoCapture(0)
+    # cap.set(3, 600)
+    # cap.set(4, 400)
 
-    vw = int(cap.get(3))
-    vh = int(cap.get(4))
+    # vw = int(cap.get(3))
+    # vh = int(cap.get(4))
 
-    # start = time.time()
-    while(cap.isOpened()):
-        # Capture frame-by-frame
-        ret, frame = cap.read()
+    # while(cap.isOpened()):
+    #     # Capture frame-by-frame
+    #     ret, frame = cap.read()
 
-        # Our operations on the frame come here
-        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        post_image = detection(frame)
+    #     # Our operations on the frame come here
+    #     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #     post_image = detection(frame)
 
-        # Display the resulting frame
-        cv2.imshow('frame', post_image)
+    #     # Display the resulting frame
+    #     cv2.imshow('frame', post_image)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    #     if cv2.waitKey(1) & 0xFF == ord('q'):
+    #         break
 
-    # When everything done, release the capture
-    cap.release()
-    cv2.destroyAllWindows()
-
+    # # When everything done, release the capture
+    # cap.release()
+    # cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     main()
