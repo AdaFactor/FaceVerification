@@ -66,9 +66,9 @@ def detection(image, draw=False):
     if draw:
         for center in coordinate:
             cv2.circle(image, center, 2, green_color, -1)
+        return image, coordinate
 
-    return image, coordinate
-
+    return coordinate
 
 # def main():
     # Video processing
