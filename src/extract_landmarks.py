@@ -5,7 +5,7 @@ import time
 import json
 
 from pathlib import Path
-from face import detection
+from face import detection, get_delaunay, draw_delaunay, indexing_delaunay
 
 PROJECT_DIR = Path(Path(__file__).resolve()).parents[1]
 DATA_DIR = PROJECT_DIR/'data'
@@ -25,8 +25,8 @@ def landmarks_LR(filename, extension='jpg'):
     right_img = cv2.imread(right_img_path, 0)
 
     # Detection Processing
-    left_xy = detection(left_img)
-    right_xy = detection(right_img)
+    left_xy, left_box = detection(left_img)
+    right_xy, right_box = detection(right_img)
 
     # Construction Object Data
     landmarks_info = {
@@ -34,7 +34,11 @@ def landmarks_LR(filename, extension='jpg'):
         'left_img_name': left_img_name,
         'right_img_name': right_img_name,
         'left_landmarks': left_xy,
-        'right_landmarks': right_xy
+        'right_landmarks': right_xy,
+        'left_img': left_img,
+        'right_img': right_img,
+        'left_box': left_box,
+        'right_box': right_box,
     }
 
     return landmarks_info
@@ -47,10 +51,32 @@ def landmarks_to_json(landmark_info):
 
 
 def main():
+    # Create Landmarks
     LM = landmarks_LR('139')
+
+    # Get delauany model point
+    triangle_list = get_delaunay(
+        LM['left_img'],
+        LM['left_landmarks'],
+        LM['left_box']
+    )
+
+    # Add 'triangle_index' key to LM
+    LM['triangle_index'] = indexing_delaunay(
+        LM['left_landmarks'],
+        triangle_list
+    )
+
+    # Drawing Triangle
+    draw_delaunay(LM['left_img'], LM['triangle_index'], LM['left_landmarks'])
+    draw_delaunay(LM['right_img'], LM['triangle_index'], LM['right_landmarks'])
+
+    # Delete Images from LM dictionary
+    del LM['left_img']
+    del LM['right_img']
+
+    # Write information to json file
     landmarks_to_json(LM)
-    # cv2.imshow('Face detection', post_image)
-    # cv2.waitKey(0)
 
 
 if __name__ == '__main__':
