@@ -10,7 +10,7 @@ PROJECT_DIR = Path(Path(__file__).resolve()).parents[1]
 RESOURCE_DIR = PROJECT_DIR/'resource'
 DATA_DIR = PROJECT_DIR/'data'
 predictor_path = str(RESOURCE_DIR/'shape_predictor_68_face_landmarks.dat')
-filename = '114L.jpg'
+filename = '139L.jpg'
 
 
 def shape_point(img, detector):
