@@ -47,7 +47,6 @@ def detection(image, draw=False):
     dets = detector(gray_img, 0)
     shapes = []
     landmarks = []
-    # print("Number of faces detected: {}".format(len(dets)))
 
     # Get Shape from Face Detected
     for index, det in enumerate(dets):
@@ -160,7 +159,6 @@ def main():
     points, rect = detection(img)
     tri_list = get_delaunay(img, points, rect)
     tri_index = indexing_delaunay(points, tri_list)
-    print(tri_index)
 
 
 if __name__ == '__main__':
